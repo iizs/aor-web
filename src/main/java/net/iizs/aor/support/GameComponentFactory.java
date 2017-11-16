@@ -4,12 +4,14 @@ import net.iizs.aor.model.Advance;
 import net.iizs.aor.model.Commodity;
 import net.iizs.aor.model.HistoryCard;
 
-import java.util.Set;
+import java.util.Collection;
 
 public interface GameComponentFactory {
-    public Set<HistoryCard> getHistoryCards();
+    public Collection<HistoryCard> getHistoryCards();
 
-    public Set<Commodity> getCommodities();
+    public Collection<Commodity> getCommodities();
 
-    public Set<Advance> getAdvances();
+    public Collection<Advance> getAdvances();
+
+    public Advance getAdvance(String key);
 }

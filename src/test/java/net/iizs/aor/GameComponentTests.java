@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Collection;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -24,11 +25,11 @@ public class GameComponentTests {
     @Test
     public void gameComponentFactoryTest() {
 
-        Set<Commodity> commodities = gameComponentFactory.getCommodities();
+        Collection<Commodity> commodities = gameComponentFactory.getCommodities();
         assertEquals(12, commodities.size());
         assertEquals(true, commodities.contains(Commodity.CLOTH));
 
-        Set<Advance> advances = gameComponentFactory.getAdvances();
+        Collection<Advance> advances = gameComponentFactory.getAdvances();
         assertEquals(26, advances.size() );
 
         int countScience = 0;
@@ -37,17 +38,26 @@ public class GameComponentTests {
         }
         assertEquals( 4, countScience );
 
-        Set<HistoryCard> historyCards = gameComponentFactory.getHistoryCards();
+        for (int i=0; i<26; ++i ) {
+            char k = (char)('A' + i);
+            String key = Character.toString(k);
+            Advance a = gameComponentFactory.getAdvance(key);
+            assertEquals(key, a.getShortName());
+        }
+
+        Collection<HistoryCard> historyCards = gameComponentFactory.getHistoryCards();
         assertEquals( 64, historyCards.size() );
 
         int countShuffledLater = 0;
         int countReshuffled = 0;
         for ( HistoryCard h : historyCards ) {
-            if ( h.isShuffledLater() ) { ++countShuffledLater; System.out.println(h);}
+            if ( h.isShuffledLater() ) { ++countShuffledLater; }
             if ( h.isReshuffled() ) { ++countReshuffled; }
         }
         assertEquals( 5, countShuffledLater );
         assertEquals( 40, countReshuffled );
+
+
 
 
     }

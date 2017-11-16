@@ -2,17 +2,20 @@ package net.iizs.aor.support;
 
 import net.iizs.aor.model.*;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class EuropeanGameComponentFactory implements GameComponentFactory {
     private Set<Commodity> commodities;
-    private Set<Advance> advances;
     private Set<HistoryCard> historyCards;
+    private Map<String, Advance> advanceMap;
 
     public EuropeanGameComponentFactory() {
+        initializeCommodities();
+        initializeAdvances();
+        initializeHistoryCards();
+    }
+
+    private void initializeCommodities() {
         Commodity[] commoditiesArray = {
                 Commodity.STONE,
                 Commodity.WOOL,
@@ -27,8 +30,10 @@ public class EuropeanGameComponentFactory implements GameComponentFactory {
                 Commodity.GOLD,
                 Commodity.IVORY
         };
-        this.commodities = Collections.unmodifiableSet(new HashSet<Commodity>(Arrays.asList(commoditiesArray)));
+        this.commodities = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(commoditiesArray)));
+    }
 
+    private void initializeAdvances() {
         // credits 는 https://boardgamegeek.com/filepage/11650/aoreurogamespdf 를 따름
         Advance A = new Advance("A", "The Heavens", AdvanceCategory.SCIENCE, 30, 20 );
         Advance B = new Advance("B", "Human Body", AdvanceCategory.SCIENCE, 60, 20 );
@@ -70,8 +75,29 @@ public class EuropeanGameComponentFactory implements GameComponentFactory {
                 Q, R, S, T, U,
                 V, W, X, Y, Z
         };
-        this.advances = Collections.unmodifiableSet(new HashSet<Advance>(Arrays.asList(advancesArray)));
 
+        this.advanceMap = new HashMap<>();
+        for (Advance a : advancesArray) {
+            this.advanceMap.put(a.getShortName(), a);
+        }
+    }
+
+    private void initializeHistoryCards() {
+        Advance A = this.getAdvance("A");
+        Advance B = this.getAdvance("B");
+        Advance C = this.getAdvance("C");
+        Advance D = this.getAdvance("D");
+        Advance E = this.getAdvance("E");
+        Advance N = this.getAdvance("N");
+        Advance O = this.getAdvance("O");
+        Advance P = this.getAdvance("P");
+        Advance Q = this.getAdvance("Q");
+        Advance R = this.getAdvance("R");
+        Advance T = this.getAdvance("T");
+        Advance U = this.getAdvance("U");
+        Advance W = this.getAdvance("W");
+        Advance X = this.getAdvance("X");
+        Advance Y = this.getAdvance("Y");
         EventCard theCrusades = new EventCard("The Crusades", "E15_cru", 1, true, true, "Place one of your • markers anywhere within Area VI and remove any other markers in that Province. Gain one Misery. This card increases the credits for Walter the Penniless if he is also played this turn.Voided by Mongol Armies in Epoch 2 or 3 and becomes an unplayable Misery burden.");
         EventCard mongolArmies = new EventCard("Mongol Armies", "E21_mon", 2, false, false, "Collect $10 from the Bank. Marco Polo credits are doubled if played hereafter. The Crusades event becomes an unplayable Misery burden.");
         HistoryCard[] historyCardsArray = {
@@ -140,22 +166,26 @@ public class EuropeanGameComponentFactory implements GameComponentFactory {
                 new LeaderCard("Sir Isaac Newton", "L35_CD", 3, false, 20, C, D),
                 new LeaderCard("Henry Oldenburg", "L36_D", 3, false, 30, D),
         };
-        this.historyCards = Collections.unmodifiableSet(new HashSet<HistoryCard>(Arrays.asList(historyCardsArray)));
-
+        this.historyCards = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(historyCardsArray)));
     }
 
     @Override
-    public Set<HistoryCard> getHistoryCards() {
+    public Collection<HistoryCard> getHistoryCards() {
         return this.historyCards;
     }
 
     @Override
-    public Set<Commodity> getCommodities() {
+    public Collection<Commodity> getCommodities() {
         return this.commodities;
     }
 
     @Override
-    public Set<Advance> getAdvances() {
-        return this.advances;
+    public Collection<Advance> getAdvances() {
+        return this.advanceMap.values();
+    }
+
+    @Override
+    public Advance getAdvance(String key) {
+        return this.advanceMap.get(key);
     }
 }
